@@ -33,23 +33,58 @@ function hanleImgClick(e) {
 
   const originalImg = e.target.dataset.source;
   createLightBox(originalImg).show();
-
-  document.body.style.overflowY = "hidden";
-  document.style.overflowY = "hidden";
 }
 
 const createLightBox = (originalImg) => {
-  const instance = basicLightbox.create(`
+  const instance = basicLightbox.create(
+    `
     <img src="${originalImg}">
-`);
+`,
+    {
+      onShow: (instance) => {
+        scrollDisactivate();
+        window.addEventListener("keydown", EscapePress);
+      },
+      onClose: (instance) => {
+        scrollActivate();
+        window.removeEventListener("keydown", () => {
+          console.log("removeEventListener");
+        });
+      },
+    }
+  );
   return instance;
 };
 
-document.body.onkeydown = function (e) {
-  e = e || window.event;
-  var c = e.keyCode;
-  //Убирает эвент на стрелках, на pageDown, PageUp, Home, End
-  if ((c > 36 && c < 41) || (c > 32 && c < 37)) {
-    return false;
+function scrollDisactivate() {
+  document.body.style.overflowY = "hidden";
+}
+
+function scrollActivate() {
+  document.body.style.overflowY = "auto";
+}
+
+function EscapePress(event) {
+  if (event.code === "Escape") {
+    window.instance.close();
   }
-};
+}
+// function onCloseModal(e) {
+//   if (e.code === "Escape") {
+//     console.log("Escape");
+//   }
+// }
+
+// document.addEventListener("keydown", (event) => {
+//   console.log("key: ", event.key);
+//   console.log("code: ", event.code);
+// });
+
+// document.body.onkeydown = function (e) {
+//   e = e || window.event;
+//   var c = e.keyCode;
+//   //Убирает эвент на стрелках, на pageDown, PageUp, Home, End
+//   if ((c > 36 && c < 41) || (c > 32 && c < 37)) {
+//     return false;
+//   }
+// };
