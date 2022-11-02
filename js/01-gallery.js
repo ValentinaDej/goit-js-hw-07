@@ -1,90 +1,58 @@
 import { galleryItems } from "./gallery-items.js";
 // Change code below this line
 
-const markup = galleryItems
+const galleryList = document.querySelector(".gallery");
+
+const markupGalleryList = galleryItems
   .map(
-    (galleryItem) => `<div class="gallery__item">
-<a class="gallery__link" href="${galleryItem.original}">
+    ({ original, preview, description }) => `<div class="gallery__item"> 
+    <a class="gallery__link" href="${original}">
      <img
        class="gallery__image"
-       src="${galleryItem.preview}"
-       data-source="${galleryItem.original}"
-       alt="${galleryItem.description}"
+       src="${preview}"
+       data-source="${original}"
+       alt="${description}"
      />
    </a>
  </div>`
   )
   .join("");
 
-const galleryItem = document.querySelector(".gallery");
+galleryList.insertAdjacentHTML("beforeend", markupGalleryList);
+galleryList.addEventListener("click", onImgClick);
 
-galleryItem.insertAdjacentHTML("beforeend", markup);
-
-galleryItem.addEventListener("click", hanleImgClick);
-
-function hanleImgClick(e) {
+function onImgClick(e) {
   e.preventDefault();
-  // if (!e.target.classList.contains("gallery__image")) {
-  //   return;
-  // }
-  if (!e.target.dataset.source) {
+  if (!e.target.classList.contains("gallery__image")) {
     return;
   }
-
-  const originalImg = e.target.dataset.source;
-  createLightBox(originalImg).show();
+  createLightBox(e.target.dataset.source).show();
 }
 
-const createLightBox = (originalImg) => {
+let onActiveImg;
+
+const createLightBox = (original) => {
   const instance = basicLightbox.create(
     `
-    <img src="${originalImg}">
+    <img src="${original}">
 `,
     {
-      onShow: (instance) => {
-        scrollDisactivate();
-        window.addEventListener("keydown", EscapePress);
+      onShow: () => {
+        onActiveImg = onKeyPress.bind(this, instance);
+        document.addEventListener("keydown", onActiveImg);
+        document.body.classList.add("scroll-disable");
       },
-      onClose: (instance) => {
-        scrollActivate();
-        window.removeEventListener("keydown", () => {
-          console.log("removeEventListener");
-        });
+      onClose: () => {
+        document.removeEventListener("keydown", onActiveImg);
+        document.body.classList.remove("scroll-disable");
       },
     }
   );
   return instance;
 };
 
-function scrollDisactivate() {
-  document.body.style.overflowY = "hidden";
-}
-
-function scrollActivate() {
-  document.body.style.overflowY = "auto";
-}
-
-function EscapePress(event) {
-  if (event.code === "Escape") {
-    window.instance.close();
+const onKeyPress = function (instance) {
+  if (event.key === "Escape") {
+    instance.close();
   }
-}
-// function onCloseModal(e) {
-//   if (e.code === "Escape") {
-//     console.log("Escape");
-//   }
-// }
-
-// document.addEventListener("keydown", (event) => {
-//   console.log("key: ", event.key);
-//   console.log("code: ", event.code);
-// });
-
-// document.body.onkeydown = function (e) {
-//   e = e || window.event;
-//   var c = e.keyCode;
-//   //Убирает эвент на стрелках, на pageDown, PageUp, Home, End
-//   if ((c > 36 && c < 41) || (c > 32 && c < 37)) {
-//     return false;
-//   }
-// };
+};

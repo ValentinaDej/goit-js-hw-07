@@ -42,3 +42,7 @@
 .gallery__link:hover {
   cursor: zoom-in;
 }
+
+.scroll-disable {
+  overflow: hidden;
+}
