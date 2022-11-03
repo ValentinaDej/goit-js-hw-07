@@ -13,8 +13,6 @@ const markupGalleryList = galleryItems
   )
   .join("");
 
-const createLightbox = new SimpleLightbox(".gallery a", {});
-
 galleryList.insertAdjacentHTML("beforeend", markupGalleryList);
 galleryList.addEventListener("click", onImgClick);
 
@@ -23,5 +21,10 @@ function onImgClick(e) {
   if (!e.target.classList.contains("gallery__image")) {
     return;
   }
-  createLightbox();
+  (function () {
+    const createLightbox = new SimpleLightbox(".gallery a", {
+      captionsData: "alt",
+      captionDelay: 250,
+    });
+  })();
 }
