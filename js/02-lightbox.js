@@ -21,10 +21,10 @@ function onImgClick(e) {
   if (!e.target.classList.contains("gallery__image")) {
     return;
   }
-  (function () {
-    const createLightbox = new SimpleLightbox(".gallery a", {
-      captionsData: "alt",
-      captionDelay: 250,
-    });
-  })();
+  lightbox();
 }
+
+const lightbox = new SimpleLightbox(".gallery a", {
+  captionsData: "alt",
+  captionDelay: 250,
+});
