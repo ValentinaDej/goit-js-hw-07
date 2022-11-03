@@ -13,9 +13,10 @@ const markupGalleryList = galleryItems
   )
   .join("");
 
+const createLightbox = new SimpleLightbox(".gallery a", {});
+
 galleryList.insertAdjacentHTML("beforeend", markupGalleryList);
 galleryList.addEventListener("click", onImgClick);
-const createLightbox = new SimpleLightbox(".gallery a", {});
 
 function onImgClick(e) {
   e.preventDefault();
